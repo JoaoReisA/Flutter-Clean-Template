@@ -29,7 +29,7 @@ class NumberTriviaLocalDataSourceImpl implements NumberTriviaLocalDataSource {
   }
 
   @override
-  cacheNumberTrivia(NumberTriviaModel triviaToCache) {
+   cacheNumberTrivia(NumberTriviaModel triviaToCache) {
     return sharedPreferences.setString(
       CACHED_NUMBER_TRIVIA,
       json.encode(triviaToCache.toJson()),
