@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
@@ -30,24 +31,34 @@ class NumberTriviaBloc extends Bloc<NumberTriviaEvent, NumberTriviaState> {
   })  : getConcreteNumberTrivia = concrete,
         getRandomNumberTrivia = random,
         super(Empty()) {
-    on<GetTriviaForConcreteNumber>((event, emit) {
-      final inputEither =
-          inputConverter.stringToUnsignedInteger(event.numberString);
-      return inputEither.fold((failure) {
-        return emit(Error(message: INVALID_INPUT_FAILURE_MESSAGE));
-      }, (integer) async {
-        emit(Loading());
-        final failureOrTrivia = 
-            await getConcreteNumberTrivia(Params(number: integer));
-        failureOrTrivia.fold(
-          (failure) => emit(Error(message: _mapFailureToMessage(failure))),
-          (trivia) => emit(Loaded(numberTrivia: trivia)),
-        );
-      });
+          
+    on<GetTriviaForConcreteNumber>((event, emit) async{
+      return await onEventGetTriviaForConcreteNumber(event, emit);
     });
+
     on<GetTriviaForRandomNumber>((event, emit) async {
+      await onEventGetTriviaForRandomNumber(emit);
+    });
+  }
+
+  Future<void> onEventGetTriviaForRandomNumber(Emitter<NumberTriviaState> emit) async {
+    emit(Loading());
+    final failureOrTrivia = await getRandomNumberTrivia(NoParams());
+    failureOrTrivia.fold(
+      (failure) => emit(Error(message: _mapFailureToMessage(failure))),
+      (trivia) => emit(Loaded(numberTrivia: trivia)),
+    );
+  }
+
+   onEventGetTriviaForConcreteNumber(GetTriviaForConcreteNumber event, Emitter<NumberTriviaState> emit) async {
+    final inputEither =
+        inputConverter.stringToUnsignedInteger(event.numberString);
+    return inputEither.fold((failure) {
+      return emit(Error(message: INVALID_INPUT_FAILURE_MESSAGE));
+    }, (integer) async {
       emit(Loading());
-      final failureOrTrivia = await getRandomNumberTrivia(NoParams());
+      final failureOrTrivia =
+          await getConcreteNumberTrivia(Params(number: integer));
       failureOrTrivia.fold(
         (failure) => emit(Error(message: _mapFailureToMessage(failure))),
         (trivia) => emit(Loaded(numberTrivia: trivia)),
