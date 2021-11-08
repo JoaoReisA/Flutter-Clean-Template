@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
@@ -36,7 +37,7 @@ class NumberTriviaBloc extends Bloc<NumberTriviaEvent, NumberTriviaState> {
         return emit(Error(message: INVALID_INPUT_FAILURE_MESSAGE));
       }, (integer) async {
         emit(Loading());
-        final failureOrTrivia =
+        final failureOrTrivia = 
             await getConcreteNumberTrivia(Params(number: integer));
         failureOrTrivia.fold(
           (failure) => emit(Error(message: _mapFailureToMessage(failure))),

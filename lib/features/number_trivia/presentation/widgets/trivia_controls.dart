@@ -12,7 +12,7 @@ class TriviaControl extends StatefulWidget {
 }
 
 class _TriviaControlState extends State<TriviaControl> {
-  String? inputStr;
+  late String inputStr;
   final controller = TextEditingController();
   @override
   Widget build(BuildContext context) {
@@ -38,7 +38,7 @@ class _TriviaControlState extends State<TriviaControl> {
           children: [
             Expanded(
                 child: ElevatedButton(
-              onPressed: () => dispatchConcrete(),
+              onPressed: dispatchConcrete,
               child: Text('Search'),
             )),
             SizedBox(
@@ -57,9 +57,7 @@ class _TriviaControlState extends State<TriviaControl> {
 
   void dispatchConcrete() {
     controller.clear();
-    context
-        .read<NumberTriviaBloc>()
-        .add(GetTriviaForConcreteNumber(numberString: inputStr!));
+    context.read<NumberTriviaBloc>().add(GetTriviaForConcreteNumber(numberString:  inputStr));
   }
 
     void dispatchRandom() {
