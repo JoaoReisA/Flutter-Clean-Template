@@ -1,7 +1,9 @@
-import 'package:clean_arch_reso/features/number_trivia/presentation/bloc/number_trivia_bloc.dart';
-import 'package:clean_arch_reso/injection_container.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../../../injection_container.dart';
+import '../bloc/number_trivia_bloc.dart';
+import '../widgets/widgets.dart';
 
 class NumberTriviaPage extends StatelessWidget {
   const NumberTriviaPage({Key? key}) : super(key: key);
@@ -12,7 +14,7 @@ class NumberTriviaPage extends StatelessWidget {
         appBar: AppBar(
           title: const Text('Number Trivia'),
         ),
-        body: buildBody(context));
+        body: SingleChildScrollView(child: buildBody(context)));
   }
 
   BlocProvider<NumberTriviaBloc> buildBody(BuildContext context) {
@@ -28,6 +30,17 @@ class NumberTriviaPage extends StatelessWidget {
                 ),
                 BlocBuilder<NumberTriviaBloc, NumberTriviaState>(
                   builder: (context, state) {
+                    if (state is Empty) {
+                      return const MessageDisplay(message: 'Start Searching');
+                    } else if (state is Error) {
+                      return MessageDisplay(message: state.message);
+                    } else if (state is Loading) {
+                      return const LoadingWidget();
+                    } else if (state is Loaded) {
+                      return TriviaDisplay(
+                        numberTrivia: state.numberTrivia,
+                      );
+                    }
                     return Container(
                       height: MediaQuery.of(context).size.height / 3,
                       child: Placeholder(),
@@ -37,32 +50,7 @@ class NumberTriviaPage extends StatelessWidget {
                 SizedBox(
                   height: 20,
                 ),
-                Column(
-                  children: [
-                    //TextField
-                    Placeholder(
-                      fallbackHeight: 40,
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Row(
-                      children: [
-                        Expanded(
-                            child: Placeholder(
-                          fallbackHeight: 30,
-                        )),
-                        SizedBox(
-                          width: 20,
-                        ),
-                        Expanded(
-                            child: Placeholder(
-                          fallbackHeight: 30,
-                        ))
-                      ],
-                    )
-                  ],
-                )
+                TriviaControl()
               ],
             ),
           ),

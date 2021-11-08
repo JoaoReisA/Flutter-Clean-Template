@@ -15,7 +15,7 @@ import 'features/number_trivia/presentation/bloc/number_trivia_bloc.dart';
 
 final GetIt sl = GetIt.instance;
 
-Future<void> init() async{
+Future<void> init() async {
   //! Features - Number Trivia
   //Bloc
   sl.registerFactory<NumberTriviaBloc>(() => NumberTriviaBloc(
@@ -35,19 +35,18 @@ Future<void> init() async{
             localDataSource: sl(),
             networkInfo: sl(),
           ));
-
   // Data Sources
   sl.registerLazySingleton<NumberTriviaRemoteDataSource>(
       () => NumberTriviaRemoteDataSourceImpl(client: sl()));
   sl.registerLazySingleton<NumberTriviaLocalDataSource>(
       () => NumberTriviaLocalDataSourceImpl(sl()));
-
   //! Core
   sl.registerLazySingleton(() => InputConverter());
   sl.registerLazySingleton<NetworkInfo>(() => NetworkInfoImpl(sl()));
   //! External
   final sharedPreferences = await SharedPreferences.getInstance();
-  sl.registerLazySingleton(() => sharedPreferences);
+  sl.registerLazySingleton<SharedPreferences>(() => sharedPreferences);
   sl.registerLazySingleton(() => Dio());
   sl.registerLazySingleton(() => InternetConnectionChecker());
 }
+

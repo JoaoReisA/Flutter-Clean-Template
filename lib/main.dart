@@ -2,8 +2,10 @@ import 'package:clean_arch_reso/features/number_trivia/presentation/pages/number
 import 'package:clean_arch_reso/injection_container.dart' as di;
 import 'package:flutter/material.dart';
 
-void main() {
-  di.init();
+void main() async {
+
+  WidgetsFlutterBinding.ensureInitialized();
+  await di.init();
   runApp(const MyApp());
 }
 
